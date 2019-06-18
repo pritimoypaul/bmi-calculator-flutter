@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'icon_content.dart';
-import 'changable_container.dart';
-import 'constants.dart';
-import 'results_page.dart';
+import 'package:bmi_calculator/components/icon_content.dart';
+import 'package:bmi_calculator/components/changable_container.dart';
+import 'package:bmi_calculator/constants.dart';
+import 'package:bmi_calculator/screens/results_page.dart';
+import 'package:bmi_calculator/components/round_icon_button.dart';
+import 'package:bmi_calculator/components/bottom_button.dart';
+import 'package:bmi_calculator/calculator_brain.dart';
 
 enum Sex {
   male,
@@ -15,7 +18,7 @@ class InputPage extends StatefulWidget {
   _InputPageState createState() => _InputPageState();
 }
 
-Sex sex;
+Sex sex = Sex.male;
 int height = 120;
 int weight = 60;
 int age = 19;
@@ -204,49 +207,25 @@ class _InputPageState extends State<InputPage> {
               ],
             ),
           ),
-          GestureDetector(
+          BottomButton(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ResultsPage()));
-            },
-            child: Container(
-              color: kbottomcontcolor,
-              child: Center(
-                child: Text(
-                  'Calculate',
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+              CalculatorBrain calc =
+                  CalculatorBrain(height = height, weight = weight);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ResultsPage(
+                        bmiResult: calc.calculateBMI(),
+                        resultText: calc.getResult(),
+                        interpretation: calc.getInterpretation(),
+                      ),
                 ),
-              ),
-              margin: EdgeInsets.only(top: 10.0),
-              height: 80.0,
-              width: double.infinity,
-            ),
+              );
+            },
+            buttonTitle: 'Calculate',
           ),
         ],
       ),
-    );
-  }
-}
-
-class RoundIconButton extends StatelessWidget {
-  RoundIconButton({@required this.icon, @required this.onPressed});
-  final IconData icon;
-  final Function onPressed;
-  @override
-  Widget build(BuildContext context) {
-    return RawMaterialButton(
-      onPressed: onPressed,
-      child: Icon(icon),
-      elevation: 0.0,
-      constraints: BoxConstraints.tightFor(
-        width: 56.0,
-        height: 56.0,
-      ),
-      shape: CircleBorder(),
-      fillColor: Color(0xFF4C4F5E),
     );
   }
 }
